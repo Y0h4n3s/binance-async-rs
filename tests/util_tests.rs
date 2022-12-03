@@ -7,23 +7,23 @@ mod tests {
     use std::time::{SystemTime, UNIX_EPOCH};
     use float_cmp::*;
 
-    #[test]
-    fn build_request_empty() {
+    #[tokio::test]
+    async fn build_request_empty() {
         let parameters: BTreeMap<String, String> = BTreeMap::new();
         let result = build_request(parameters);
         assert!(result.is_empty());
     }
 
-    #[test]
-    fn build_request_not_empty() {
+    #[tokio::test]
+    async fn build_request_not_empty() {
         let mut parameters: BTreeMap<String, String> = BTreeMap::new();
         parameters.insert("recvWindow".into(), "1234".to_string());
         let result = build_request(parameters);
         assert_eq!(result, format!("recvWindow={}", 1234));
     }
 
-    #[test]
-    fn build_signed_request() {
+    #[tokio::test]
+    async fn build_signed_request() {
         let now = SystemTime::now();
         let recv_window = 1234;
 
@@ -41,16 +41,16 @@ mod tests {
         );
     }
 
-    #[test]
-    fn to_i64() {
+    #[tokio::test]
+    async fn to_i64() {
         let value_max = serde_json::json!(i64::MAX);
         let value_min = serde_json::json!(i64::MIN);
         assert_eq!(binance::util::to_i64(&value_max), i64::MAX);
         assert_eq!(binance::util::to_i64(&value_min), i64::MIN);
     }
 
-    #[test]
-    fn to_f64() {
+    #[tokio::test]
+    async fn to_f64() {
         let value = serde_json::json!("123.3");
         assert!(approx_eq!(
             f64,
